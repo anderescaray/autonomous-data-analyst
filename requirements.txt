@@ -1,0 +1,14 @@
+# Interfaz de usuario
+streamlit>=1.31.0
+
+# Manipulación de Datos
+pandas>=2.0.0
+
+# LangChain y LangGraph (El cerebro del agente)
+langchain>=0.1.0
+langgraph>=0.0.26
+langchain-openai>=0.0.5
+langchain-experimental>=0.0.52
+
+# Utilidades
+python-dotenv>=1.0.0
