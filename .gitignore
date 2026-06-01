@@ -1,5 +1,72 @@
-.env
+# === Python ===
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+MANIFEST
+
+# === Virtual environments ===
 .venv/
 venv/
+env/
+ENV/
+.env.bak
+
+# === Environment / secrets ===
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+
+# === Jupyter ===
+.ipynb_checkpoints/
+*.ipynb
+
+# === Data files (temp/uploads) ===
+uploads/
+tmp/
+temp/
+*.tmp
+*.cache
+data/raw/
+data/processed/
+*.parquet
+*.feather
+
+# === Excel / CSV uploads ===
+*.xlsx
+*.xls
+*.csv
+
+# === Streamlit ===
+.streamlit/secrets.toml
+
+# === OS artifacts ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === Logs ===
+*.log
+logs/
+
+# === Pytest / coverage ===
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
