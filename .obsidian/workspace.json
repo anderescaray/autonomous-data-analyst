@@ -15,9 +15,9 @@
               "state": {
                 "file": "autonomous-data-analyst.canvas",
                 "viewState": {
-                  "x": -350,
-                  "y": -415,
-                  "zoom": -0.02966578220789889
+                  "x": 580,
+                  "y": 130.4874213836478,
+                  "zoom": -0.7414952526467203
                 }
               },
               "icon": "lucide-layout-dashboard",
@@ -188,6 +188,41 @@
   },
   "active": "fd458344f0373c27",
   "lastOpenFiles": [
-    "RULES.md"
+    "src/__pycache__/profiler.cpython-314.pyc",
+    "tests/__pycache__/test_profiler.cpython-314-pytest-9.0.3.pyc",
+    "tests/test_profiler.py",
+    "tests/test_profiler.py.tmp.2468.888a6857e9e9",
+    "app.py.tmp.2468.0262335b8d6a",
+    "src/profiler.py",
+    "src/profiler.py.tmp.2468.5d41d09acb72",
+    "venv/Lib/site-packages/openpyxl/utils/__pycache__/protection.cpython-314.pyc",
+    "venv/Lib/site-packages/openpyxl/utils/__pycache__/units.cpython-314.pyc",
+    "venv/Lib/site-packages/openpyxl/utils/__pycache__/indexed_list.cpython-314.pyc",
+    "venv/Lib/site-packages/openpyxl/cell/__pycache__/__init__.cpython-314.pyc",
+    "venv/Lib/site-packages/langchain_experimental/cpal/README.md",
+    "venv/Lib/site-packages/altair/jupyter/js/README.md",
+    "venv/Lib/site-packages/anthropic/lib/foundry.md",
+    "venv/Lib/site-packages/langsmith/sandbox/README.md",
+    "venv/Lib/site-packages/langsmith/cli/README.md",
+    "venv/Lib/site-packages/openai/resources/webhooks/api.md",
+    "venv/Lib/site-packages/openai/resources/responses/api.md",
+    "venv/Lib/site-packages/openai/resources/realtime/api.md",
+    "venv/Lib/site-packages/openai/resources/conversations/api.md",
+    "venv/Lib/site-packages/httpx-0.28.1.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/starlette-1.2.1.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/uvicorn-0.48.0.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/httpcore-1.0.9.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/docstring_parser-0.18.0.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/idna-3.17.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/narwhals-2.21.2.dist-info/licenses/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/_core/src/npysort/x86-simd-sort/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/splitmix64/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/sfc64/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/philox/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/pcg64/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/mt19937/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/src/distributions/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/fft/pocketfft/LICENSE.md",
+    "venv/Lib/site-packages/numpy-2.4.6.dist-info/licenses/numpy/random/LICENSE.md"
   ]
 }

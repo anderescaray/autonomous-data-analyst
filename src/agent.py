@@ -1,26 +1,23 @@
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode, tools_condition
 
 from src.state import AgentState
 from src.tools import create_data_tool
+from src.llm import get_llm
 
-# Load environment variables 
 load_dotenv()
 
 def create_agent_graph(df: pd.DataFrame):
     """
     Builds and compiles the LangGraph state machine for the Data Analyst Agent.
     """
-    # 1. Initialize the tool with the user's DataFrame
     data_tool = create_data_tool(df)
     tools = [data_tool]
 
-    # 2. Initialize the LLM (temperature=0 ensures deterministic, focused code generation)
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = get_llm(temperature=0)
 
     # Bind the tools to the LLM so it knows what actions it can take
     llm_with_tools = llm.bind_tools(tools)

@@ -1,14 +1,21 @@
-# Interfaz de usuario
+# UI
 streamlit>=1.31.0
 
-# Manipulación de Datos
+# Data
 pandas>=2.0.0
+openpyxl>=3.1.0
 
-# LangChain y LangGraph (El cerebro del agente)
+# Agent framework
 langchain>=0.1.0
 langgraph>=0.0.26
-langchain-openai>=0.0.5
 langchain-experimental>=0.0.52
 
-# Utilidades
+# LLM providers (install the ones you need)
+langchain-openai>=0.0.5
+langchain-anthropic>=0.1.0
+
+# Utilities
 python-dotenv>=1.0.0
+
+# Dev / testing
+pytest>=8.0.0
