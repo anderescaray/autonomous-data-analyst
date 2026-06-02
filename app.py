@@ -1,7 +1,13 @@
+import io
 import streamlit as st
 import pandas as pd
 
 from src.ingestion import load_file, IngestionError
+
+
+@st.cache_data(show_spinner=False)
+def _parse_upload(data: bytes, filename: str) -> pd.DataFrame:
+    return load_file(io.BytesIO(data), filename)
 
 st.set_page_config(page_title="Data Analyst", layout="wide")
 
@@ -21,9 +27,12 @@ if uploaded is None:
 # ── Parse ──────────────────────────────────────────────────────────────────────
 with st.spinner("Reading file…"):
     try:
-        df = load_file(uploaded, uploaded.name)
+        df = _parse_upload(uploaded.getvalue(), uploaded.name)
     except IngestionError as exc:
         st.error(f"Could not read the file: {exc}")
+        st.stop()
+    except Exception as exc:
+        st.error(f"Unexpected error reading '{uploaded.name}': {exc}")
         st.stop()
 
 # ── Store in session so downstream pages can access it ────────────────────────

@@ -5,75 +5,142 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode, tools_condition
 
 from src.state import AgentState
-from src.tools import create_data_tool
+from src.chart_tools import create_chart_tool
 from src.llm import get_llm
+from src.profiler import profile_dataframe, profile_to_text
+from src.chart_planner import plan_charts
+from src.explainer import explain_charts
 
 load_dotenv()
 
+_SYSTEM_TEMPLATE = """\
+You are an autonomous Senior Data Analyst.
+You have access to a pandas DataFrame named 'df'.
+
+## Dataset profile
+{profile_text}
+
+## Recommended charts
+{chart_plan_text}
+
+## Chart insights (pre-generated)
+{chart_explanations_text}
+
+## Instructions
+- Answer user queries by writing and executing Python/Pandas code via the 'python_repl' tool.
+- Always execute code to find answers — never guess.
+- Use print() to output text results.
+- If you encounter an error, diagnose it, fix the code, and retry.
+- When generating a chart, use the exact column names from the profile above.
+- Call plt.show() after every matplotlib chart so it is captured.
+- When presenting a chart to the user, include its pre-generated insight and suggested action from the section above.
+- Explain results clearly after executing code.
+"""
+
+
+def _fmt_chart_explanations(explanations: list[dict]) -> str:
+    if not explanations:
+        return "No chart insights available yet."
+    lines = []
+    for exp in explanations:
+        title = exp.get("chart_title", "Chart")
+        lines.append(
+            f"**{title}**\n"
+            f"  - Shows: {exp.get('what_it_shows', '')}\n"
+            f"  - Key insight: {exp.get('key_insight', '')}\n"
+            f"  - Action: {exp.get('suggested_action', '')}"
+        )
+    return "\n\n".join(lines)
+
+
+def _fmt_chart_plan(chart_plan: list[dict]) -> str:
+    if not chart_plan:
+        return "No chart plan available yet."
+    lines = []
+    for i, spec in enumerate(chart_plan, 1):
+        y_part = f" vs {spec['y']}" if spec.get("y") else ""
+        lines.append(
+            f"{i}. [{spec['chart_type'].upper()}] {spec['title']} "
+            f"(x={spec.get('x')}{y_part}) — {spec['justification']}"
+        )
+    return "\n".join(lines)
+
+
+def _make_harvester_node(captured: list[dict]):
+    """Return a LangGraph node that drains captured figures into state after each tool call."""
+    def harvester_node(state: AgentState) -> dict:
+        new_figures = captured[:]
+        del captured[:]
+        if new_figures:
+            return {"captured_figures": new_figures}
+        return {}
+    return harvester_node
+
+
 def create_agent_graph(df: pd.DataFrame):
     """
-    Builds and compiles the LangGraph state machine for the Data Analyst Agent.
+    Build and compile the LangGraph agent.
+
+    Returns:
+        app:    Compiled LangGraph application.
+        p_text: Profile text for the DataFrame (for UI display and initial state).
+
+    Figures produced during tool calls accumulate in state["captured_figures"].
     """
-    data_tool = create_data_tool(df)
-    tools = [data_tool]
+    profile  = profile_dataframe(df)
+    p_text   = profile_to_text(profile)
 
-    llm = get_llm(temperature=0)
+    tool, captured = create_chart_tool(df)
+    tools           = [tool]
+    llm             = get_llm(temperature=0)
+    llm_with_tools  = llm.bind_tools(tools)
 
-    # Bind the tools to the LLM so it knows what actions it can take
-    llm_with_tools = llm.bind_tools(tools)
+    # ── nodes ─────────────────────────────────────────────────────────────────
 
-    # 3. Define the System Prompt
-    system_message = """You are an autonomous Senior Data Analyst.
-    You have access to a pandas DataFrame named 'df'.
-    Your job is to answer user queries by writing and executing Python/Pandas code.
-    
-    Instructions:
-    - Always execute code to find the answer; do not guess.
-    - Use the 'python_repl' tool to run your pandas code.
-    - Always use print() to output the results you need to see.
-    - If you encounter an error, analyze it, correct your code, and try again.
-    - Once you have the final answer, explain it clearly to the user.
-    """
+    def planner_node(state: AgentState) -> dict:
+        if state.get("chart_plan"):
+            return {}
+        specs = plan_charts(state["profile_text"])
+        return {"chart_plan": [s.to_dict() for s in specs]}
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_message),
-        MessagesPlaceholder(variable_name="messages"),
-    ])
+    def explainer_node(state: AgentState) -> dict:
+        if state.get("chart_explanations"):
+            return {}
+        explanations = explain_charts(state["chart_plan"], state["profile_text"])
+        return {"chart_explanations": [e.to_dict() for e in explanations]}
 
-    # Create the chain: Prompt -> LLM (with tools)
-    agent_chain = prompt | llm_with_tools
-
-    # 4. Define the Graph Nodes
-    def agent_node(state: AgentState):
-        """Invokes the LLM to decide the next step or formulate an answer."""
-        result = agent_chain.invoke({"messages": state["messages"]})
+    def agent_node(state: AgentState) -> dict:
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", _SYSTEM_TEMPLATE),
+            MessagesPlaceholder(variable_name="messages"),
+        ])
+        chain  = prompt | llm_with_tools
+        result = chain.invoke({
+            "messages":            state["messages"],
+            "profile_text":        state.get("profile_text", ""),
+            "chart_plan_text":     _fmt_chart_plan(state.get("chart_plan", [])),
+            "chart_explanations_text": _fmt_chart_explanations(state.get("chart_explanations", [])),
+        })
         return {"messages": [result]}
 
-    # ToolNode automatically handles the execution of the tools requested by the LLM
-    tool_node = ToolNode(tools)
+    tool_node      = ToolNode(tools)
+    harvester_node = _make_harvester_node(captured)
 
-    # 5. Build the Graph Workflow
+    # ── graph ─────────────────────────────────────────────────────────────────
+
     workflow = StateGraph(AgentState)
+    workflow.add_node("planner",   planner_node)
+    workflow.add_node("explainer", explainer_node)
+    workflow.add_node("agent",     agent_node)
+    workflow.add_node("tools",     tool_node)
+    workflow.add_node("harvester", harvester_node)
 
-    # Add nodes to the graph
-    workflow.add_node("agent", agent_node)
-    workflow.add_node("tools", tool_node)
+    workflow.set_entry_point("planner")
+    workflow.add_edge("planner",   "explainer")
+    workflow.add_edge("explainer", "agent")
+    workflow.add_conditional_edges("agent", tools_condition)
+    workflow.add_edge("tools",     "harvester")
+    workflow.add_edge("harvester", "agent")
 
-    # Set the starting point
-    workflow.set_entry_point("agent")
-
-    # Add conditional routing:
-    # If the agent calls a tool -> go to 'tools' node.
-    # If the agent finishes its logic -> go to END.
-    workflow.add_conditional_edges(
-        "agent",
-        tools_condition,
-    )
-
-    # After a tool finishes executing, always route back to the agent to read the results
-    workflow.add_edge("tools", "agent")
-
-    # Compile the graph into a runnable application
     app = workflow.compile()
-
-    return app
+    return app, p_text

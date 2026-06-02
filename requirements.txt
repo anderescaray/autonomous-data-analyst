@@ -5,6 +5,10 @@ streamlit>=1.31.0
 pandas>=2.0.0
 openpyxl>=3.1.0
 
+# Visualization
+matplotlib>=3.7.0
+plotly>=5.18.0
+
 # Agent framework
 langchain>=0.1.0
 langgraph>=0.0.26

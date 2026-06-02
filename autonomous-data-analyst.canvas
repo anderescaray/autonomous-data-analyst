@@ -37,6 +37,76 @@
 			"label": "UI"
 		},
 		{
+			"id": "42e4bb9f",
+			"type": "text",
+			"text": "## CA-01 Chart-decision prompt\nDesign and implement the system prompt that receives the data profile and decides which chart types are most relevant (bar, line, scatter, pie, heatmap, histogram). The agent should justify each recommendation.",
+			"x": 460,
+			"y": 40,
+			"width": 280,
+			"height": 160,
+			"color": "4"
+		},
+		{
+			"id": "091907be",
+			"type": "text",
+			"text": "## CA-02 Chart explanation node\nAdd a second LangGraph node that, after charts are generated, writes a plain-language explanation of each chart: what it shows, what pattern or insight stands out, and what action it suggests.",
+			"x": 460,
+			"y": 220,
+			"width": 280,
+			"height": 160,
+			"color": "4"
+		},
+		{
+			"id": "c4d525fe",
+			"type": "text",
+			"text": "## CA-03 LLM provider config\nAllow the user to configure the LLM provider and API key via .env. Support OpenAI (GPT-4o) and Anthropic (Claude). Load the correct client based on PROVIDER env var.",
+			"x": 460,
+			"y": 400,
+			"width": 280,
+			"height": 160,
+			"color": "4"
+		},
+		{
+			"id": "cf4c2660",
+			"type": "text",
+			"text": "## VI-01 Chart tools in REPL\nExtend the PythonAstREPLTool to include matplotlib and plotly in its locals. Inject a helper that saves each figure to a BytesIO buffer so Streamlit can render it without writing to disk.",
+			"x": 900,
+			"y": 40,
+			"width": 280,
+			"height": 160,
+			"color": "4"
+		},
+		{
+			"id": "82d7807c",
+			"type": "text",
+			"text": "## VI-02 Chart capture mechanism\nImplement the pipeline that intercepts plt.show() calls inside the REPL, captures the output as bytes, and returns it alongside the text response so the UI can display it.",
+			"x": 900,
+			"y": 220,
+			"width": 280,
+			"height": 160,
+			"color": "5"
+		},
+		{
+			"id": "958f6266",
+			"type": "text",
+			"text": "## DL-01 File ingestion & parsing\nImplement Excel/CSV upload parser with error handling. Use openpyxl for .xlsx and pandas read_csv for .csv. Validate the file is readable and return a clean DataFrame.",
+			"x": 20,
+			"y": 40,
+			"width": 280,
+			"height": 160,
+			"color": "4"
+		},
+		{
+			"id": "59f9fc66",
+			"type": "text",
+			"text": "## DL-02 Data profiling tool\nBuild a profiler that extracts column names, dtypes, null %, cardinality, numeric stats and sample values. This output is the context given to the LLM to decide which charts to generate.",
+			"x": 20,
+			"y": 220,
+			"width": 280,
+			"height": 160,
+			"color": "4"
+		},
+		{
 			"id": "canvas-errors",
 			"type": "text",
 			"text": "## Errors\n✓ None",
@@ -67,56 +137,6 @@
 			"color": "3"
 		},
 		{
-			"id": "42e4bb9f",
-			"type": "text",
-			"text": "## CA-01 Chart-decision prompt\nDesign and implement the system prompt that receives the data profile and decides which chart types are most relevant (bar, line, scatter, pie, heatmap, histogram). The agent should justify each recommendation.",
-			"x": 460,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "0"
-		},
-		{
-			"id": "091907be",
-			"type": "text",
-			"text": "## CA-02 Chart explanation node\nAdd a second LangGraph node that, after charts are generated, writes a plain-language explanation of each chart: what it shows, what pattern or insight stands out, and what action it suggests.",
-			"x": 460,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "0"
-		},
-		{
-			"id": "c4d525fe",
-			"type": "text",
-			"text": "## CA-03 LLM provider config\nAllow the user to configure the LLM provider and API key via .env. Support OpenAI (GPT-4o) and Anthropic (Claude). Load the correct client based on PROVIDER env var.",
-			"x": 460,
-			"y": 400,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "cf4c2660",
-			"type": "text",
-			"text": "## VI-01 Chart tools in REPL\nExtend the PythonAstREPLTool to include matplotlib and plotly in its locals. Inject a helper that saves each figure to a BytesIO buffer so Streamlit can render it without writing to disk.",
-			"x": 900,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "0"
-		},
-		{
-			"id": "82d7807c",
-			"type": "text",
-			"text": "## VI-02 Chart capture mechanism\nImplement the pipeline that intercepts plt.show() calls inside the REPL, captures the output as bytes, and returns it alongside the text response so the UI can display it.",
-			"x": 900,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "0"
-		},
-		{
 			"id": "5c7354d6",
 			"type": "text",
 			"text": "## UI-01 Streamlit file upload page\nBuild app.py: file uploader widget, call the parser, show a spinner while loading, and display a data preview table (first 5 rows + shape info).",
@@ -124,7 +144,7 @@
 			"y": 40,
 			"width": 280,
 			"height": 160,
-			"color": "5"
+			"color": "4"
 		},
 		{
 			"id": "84ccc37d",
@@ -135,26 +155,6 @@
 			"width": 280,
 			"height": 160,
 			"color": "0"
-		},
-		{
-			"id": "958f6266",
-			"type": "text",
-			"text": "## DL-01 File ingestion & parsing\nImplement Excel/CSV upload parser with error handling. Use openpyxl for .xlsx and pandas read_csv for .csv. Validate the file is readable and return a clean DataFrame.",
-			"x": 20,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "59f9fc66",
-			"type": "text",
-			"text": "## DL-02 Data profiling tool\nBuild a profiler that extracts column names, dtypes, null %, cardinality, numeric stats and sample values. This output is the context given to the LLM to decide which charts to generate.",
-			"x": 20,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "5"
 		},
 		{
 			"id": "b7593e71",

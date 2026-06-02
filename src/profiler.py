@@ -37,6 +37,12 @@ def profile_dataframe(df: pd.DataFrame) -> dict:
                 "mean": _fmt(described.get("mean")),
                 "std": _fmt(described.get("std")),
             }
+        elif pd.api.types.is_datetime64_any_dtype(series):
+            min_val, max_val = series.min(), series.max()
+            entry["range"] = {
+                "min": str(min_val.date()) if pd.notna(min_val) else "n/a",
+                "max": str(max_val.date()) if pd.notna(max_val) else "n/a",
+            }
         else:
             top = (
                 series.value_counts(dropna=True)
@@ -44,6 +50,7 @@ def profile_dataframe(df: pd.DataFrame) -> dict:
                 .index.tolist()
             )
             entry["top_values"] = top
+            entry["high_cardinality"] = rows > 10 and (cardinality / rows) > 0.5
 
         columns.append(entry)
 
@@ -56,16 +63,21 @@ def profile_to_text(profile: dict) -> str:
     """
     rows = profile["shape"]["rows"]
     cols = profile["shape"]["cols"]
-    lines = [f"Dataset: {rows} rows × {cols} columns\n"]
+    lines = [f"Dataset: {rows} rows × {cols} columns"]
 
     for c in profile["columns"]:
         line = f"- {c['name']} ({c['dtype']}): {c['null_pct']}% null, {c['cardinality']} unique"
         if "stats" in c:
             s = c["stats"]
             line += f" | min={s['min']} max={s['max']} mean={s['mean']}"
+        elif "range" in c:
+            r = c["range"]
+            line += f" | range: {r['min']} → {r['max']}"
         else:
             tops = ", ".join(str(v) for v in c["top_values"][:3])
             line += f" | top: {tops}"
+            if c.get("high_cardinality"):
+                line += " [high-cardinality — not suitable for charts]"
         lines.append(line)
 
     return "\n".join(lines)
