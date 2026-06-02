@@ -1,19 +1,76 @@
 import io
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
+from langchain_core.messages import HumanMessage
 
 from src.ingestion import load_file, IngestionError
+from src.agent import create_agent_graph
+
+_AUTO_PROMPT = (
+    "Analyze this dataset: generate the recommended charts and explain the key insights."
+)
 
 
 @st.cache_data(show_spinner=False)
 def _parse_upload(data: bytes, filename: str) -> pd.DataFrame:
     return load_file(io.BytesIO(data), filename)
 
-st.set_page_config(page_title="Data Analyst", layout="wide")
 
+def _init_agent(df: pd.DataFrame, file_key: str) -> None:
+    """Build the agent graph once per uploaded file."""
+    if st.session_state.get("agent_file_key") == file_key:
+        return
+    app, p_text = create_agent_graph(df)
+    st.session_state.update({
+        "agent_file_key":     file_key,
+        "agent_app":          app,
+        "profile_text":       p_text,
+        "chart_plan":         [],
+        "chart_explanations": [],
+        "lg_messages":        [],
+        "chat_history":       [],
+    })
+
+
+def _run_turn(user_input: str) -> None:
+    app     = st.session_state["agent_app"]
+    lg_msgs = list(st.session_state["lg_messages"]) + [HumanMessage(content=user_input)]
+
+    result = app.invoke({
+        "messages":           lg_msgs,
+        "profile_text":       st.session_state["profile_text"],
+        "chart_plan":         st.session_state["chart_plan"],
+        "chart_explanations": st.session_state["chart_explanations"],
+        "captured_figures":   [],
+    })
+
+    st.session_state["lg_messages"]        = result["messages"]
+    st.session_state["chart_plan"]         = result.get("chart_plan", [])
+    st.session_state["chart_explanations"] = result.get("chart_explanations", [])
+
+    last_msg = result["messages"][-1]
+    ai_text  = last_msg.content if isinstance(last_msg.content, str) else ""
+    figures  = result.get("captured_figures", [])
+
+    st.session_state["chat_history"].append({"role": "user",      "content": user_input, "figures": []})
+    st.session_state["chat_history"].append({"role": "assistant", "content": ai_text,    "figures": figures})
+
+
+def _render_figures(figures: list[dict]) -> None:
+    for fig in figures:
+        if fig["format"] == "png":
+            st.image(io.BytesIO(fig["data"]))
+        elif fig["format"] == "html":
+            components.html(fig["data"], height=450, scrolling=False)
+
+
+# ── Page config ───────────────────────────────────────────────────────────────
+st.set_page_config(page_title="Data Analyst", layout="wide")
 st.title("Autonomous Data Analyst")
 st.caption("Upload a spreadsheet and the AI will decide which charts to generate and explain them.")
 
+# ── Upload ────────────────────────────────────────────────────────────────────
 uploaded = st.file_uploader(
     "Upload your file",
     type=["xlsx", "xls", "csv"],
@@ -24,7 +81,7 @@ if uploaded is None:
     st.info("Upload a file above to get started.")
     st.stop()
 
-# ── Parse ──────────────────────────────────────────────────────────────────────
+# ── Parse ─────────────────────────────────────────────────────────────────────
 with st.spinner("Reading file…"):
     try:
         df = _parse_upload(uploaded.getvalue(), uploaded.name)
@@ -35,21 +92,43 @@ with st.spinner("Reading file…"):
         st.error(f"Unexpected error reading '{uploaded.name}': {exc}")
         st.stop()
 
-# ── Store in session so downstream pages can access it ────────────────────────
-st.session_state["df"] = df
-
-# ── Preview ───────────────────────────────────────────────────────────────────
 rows, cols = df.shape
 st.success(f"Loaded **{rows:,} rows × {cols} columns** from `{uploaded.name}`")
 
-with st.expander("Data preview", expanded=True):
+with st.expander("Data preview", expanded=False):
     st.dataframe(df.head(5), use_container_width=True)
 
-with st.expander("Column summary"):
+with st.expander("Column summary", expanded=False):
     summary = pd.DataFrame({
-        "dtype":       df.dtypes.astype(str),
-        "non-null":    df.notna().sum(),
-        "null %":      (df.isna().mean() * 100).round(1).astype(str) + "%",
-        "unique":      df.nunique(),
+        "dtype":    df.dtypes.astype(str),
+        "non-null": df.notna().sum(),
+        "null %":   (df.isna().mean() * 100).round(1).astype(str) + "%",
+        "unique":   df.nunique(),
     })
     st.dataframe(summary, use_container_width=True)
+
+# ── Agent ─────────────────────────────────────────────────────────────────────
+_init_agent(df, file_key=f"{uploaded.name}:{uploaded.size}")
+
+# ── Chat history ──────────────────────────────────────────────────────────────
+st.divider()
+st.subheader("💬 Analysis")
+
+for turn in st.session_state.get("chat_history", []):
+    with st.chat_message(turn["role"]):
+        st.markdown(turn["content"])
+        _render_figures(turn.get("figures", []))
+
+# ── Input ─────────────────────────────────────────────────────────────────────
+user_input = st.chat_input("Ask something about your data…")
+
+if not st.session_state.get("chat_history"):
+    if st.button("🔍 Analyze automatically", type="primary"):
+        with st.spinner("Analyzing dataset…"):
+            _run_turn(_AUTO_PROMPT)
+        st.rerun()
+
+if user_input:
+    with st.spinner("Thinking…"):
+        _run_turn(user_input)
+    st.rerun()
