@@ -1,242 +1,33 @@
 {
-	"nodes": [
-		{
-			"id": "group-datala",
-			"type": "group",
-			"x": 0,
-			"y": 0,
-			"width": 380,
-			"height": 700,
-			"label": "Data Layer"
-		},
-		{
-			"id": "group-coreag",
-			"type": "group",
-			"x": 440,
-			"y": 0,
-			"width": 380,
-			"height": 700,
-			"label": "Core Agent"
-		},
-		{
-			"id": "group-visual",
-			"type": "group",
-			"x": 880,
-			"y": 0,
-			"width": 380,
-			"height": 700,
-			"label": "Visualization"
-		},
-		{
-			"id": "group-ui",
-			"type": "group",
-			"x": 1320,
-			"y": 0,
-			"width": 380,
-			"height": 700,
-			"label": "UI"
-		},
-		{
-			"id": "42e4bb9f",
-			"type": "text",
-			"text": "## CA-01 Chart-decision prompt\nDesign and implement the system prompt that receives the data profile and decides which chart types are most relevant (bar, line, scatter, pie, heatmap, histogram). The agent should justify each recommendation.",
-			"x": 460,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "091907be",
-			"type": "text",
-			"text": "## CA-02 Chart explanation node\nAdd a second LangGraph node that, after charts are generated, writes a plain-language explanation of each chart: what it shows, what pattern or insight stands out, and what action it suggests.",
-			"x": 460,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "c4d525fe",
-			"type": "text",
-			"text": "## CA-03 LLM provider config\nAllow the user to configure the LLM provider and API key via .env. Support OpenAI (GPT-4o) and Anthropic (Claude). Load the correct client based on PROVIDER env var.",
-			"x": 460,
-			"y": 400,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "cf4c2660",
-			"type": "text",
-			"text": "## VI-01 Chart tools in REPL\nExtend the PythonAstREPLTool to include matplotlib and plotly in its locals. Inject a helper that saves each figure to a BytesIO buffer so Streamlit can render it without writing to disk.",
-			"x": 900,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "82d7807c",
-			"type": "text",
-			"text": "## VI-02 Chart capture mechanism\nImplement the pipeline that intercepts plt.show() calls inside the REPL, captures the output as bytes, and returns it alongside the text response so the UI can display it.",
-			"x": 900,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "958f6266",
-			"type": "text",
-			"text": "## DL-01 File ingestion & parsing\nImplement Excel/CSV upload parser with error handling. Use openpyxl for .xlsx and pandas read_csv for .csv. Validate the file is readable and return a clean DataFrame.",
-			"x": 20,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "59f9fc66",
-			"type": "text",
-			"text": "## DL-02 Data profiling tool\nBuild a profiler that extracts column names, dtypes, null %, cardinality, numeric stats and sample values. This output is the context given to the LLM to decide which charts to generate.",
-			"x": 20,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "canvas-errors",
-			"type": "text",
-			"text": "## Errors\n✓ None",
-			"x": -540,
-			"y": -750,
-			"width": 380,
-			"height": 200,
-			"color": "1"
-		},
-		{
-			"id": "legend",
-			"type": "text",
-			"text": "## Legend\n🔴 **Red** = To Do (ready)\n⬜ **Gray** = Blocked\n🟠 **Orange** = Doing\n🔵 **Cyan** = Ready to review\n🟢 **Green** = Done\n🟣 **Purple** = Proposed by agent",
-			"x": -540,
-			"y": -310,
-			"width": 380,
-			"height": 230,
-			"color": "0"
-		},
-		{
-			"id": "canvas-warnings",
-			"type": "text",
-			"text": "## Warnings\n✓ None",
-			"x": -540,
-			"y": -530,
-			"width": 380,
-			"height": 200,
-			"color": "3"
-		},
-		{
-			"id": "5c7354d6",
-			"type": "text",
-			"text": "## UI-01 Streamlit file upload page\nBuild app.py: file uploader widget, call the parser, show a spinner while loading, and display a data preview table (first 5 rows + shape info).",
-			"x": 1340,
-			"y": 40,
-			"width": 280,
-			"height": 160,
-			"color": "4"
-		},
-		{
-			"id": "84ccc37d",
-			"type": "text",
-			"text": "## UI-02 Chat interface with chart rendering\nAdd a chat-style interface: user can type a question or click Analyze automatically. Display LLM text responses and render captured chart images inline in the conversation.",
-			"x": 1340,
-			"y": 220,
-			"width": 280,
-			"height": 160,
-			"color": "5"
-		},
-		{
-			"id": "b7593e71",
-			"type": "text",
-			"text": "## UI-03 Chart export & polish\nAdd download buttons for each chart (PNG/HTML). Apply a clean theme with wide layout. Add loading states, error messages, and an empty-state screen when no file is uploaded.",
-			"x": 1340,
-			"y": 400,
-			"width": 280,
-			"height": 160,
-			"color": "0"
-		}
+	"nodes":[
+		{"id":"group-datala","type":"group","x":0,"y":0,"width":380,"height":700,"label":"Data Layer"},
+		{"id":"group-coreag","type":"group","x":440,"y":0,"width":380,"height":700,"label":"Core Agent"},
+		{"id":"group-visual","type":"group","x":880,"y":0,"width":380,"height":700,"label":"Visualization"},
+		{"id":"group-ui","type":"group","x":1320,"y":0,"width":380,"height":700,"label":"UI"},
+		{"id":"42e4bb9f","type":"text","text":"## CA-01 Chart-decision prompt\nDesign and implement the system prompt that receives the data profile and decides which chart types are most relevant (bar, line, scatter, pie, heatmap, histogram). The agent should justify each recommendation.","x":460,"y":40,"width":280,"height":160,"color":"4"},
+		{"id":"091907be","type":"text","text":"## CA-02 Chart explanation node\nAdd a second LangGraph node that, after charts are generated, writes a plain-language explanation of each chart: what it shows, what pattern or insight stands out, and what action it suggests.","x":460,"y":220,"width":280,"height":160,"color":"4"},
+		{"id":"c4d525fe","type":"text","text":"## CA-03 LLM provider config\nAllow the user to configure the LLM provider and API key via .env. Support OpenAI (GPT-4o) and Anthropic (Claude). Load the correct client based on PROVIDER env var.","x":460,"y":400,"width":280,"height":160,"color":"4"},
+		{"id":"cf4c2660","type":"text","text":"## VI-01 Chart tools in REPL\nExtend the PythonAstREPLTool to include matplotlib and plotly in its locals. Inject a helper that saves each figure to a BytesIO buffer so Streamlit can render it without writing to disk.","x":900,"y":40,"width":280,"height":160,"color":"4"},
+		{"id":"82d7807c","type":"text","text":"## VI-02 Chart capture mechanism\nImplement the pipeline that intercepts plt.show() calls inside the REPL, captures the output as bytes, and returns it alongside the text response so the UI can display it.","x":900,"y":220,"width":280,"height":160,"color":"4"},
+		{"id":"958f6266","type":"text","text":"## DL-01 File ingestion & parsing\nImplement Excel/CSV upload parser with error handling. Use openpyxl for .xlsx and pandas read_csv for .csv. Validate the file is readable and return a clean DataFrame.","x":20,"y":40,"width":280,"height":160,"color":"4"},
+		{"id":"59f9fc66","type":"text","text":"## DL-02 Data profiling tool\nBuild a profiler that extracts column names, dtypes, null %, cardinality, numeric stats and sample values. This output is the context given to the LLM to decide which charts to generate.","x":20,"y":220,"width":280,"height":160,"color":"4"},
+		{"id":"canvas-errors","type":"text","text":"## Errors\n✓ None","x":-540,"y":-750,"width":380,"height":200,"color":"1"},
+		{"id":"legend","type":"text","text":"## Legend\n🔴 **Red** = To Do (ready)\n⬜ **Gray** = Blocked\n🟠 **Orange** = Doing\n🔵 **Cyan** = Ready to review\n🟢 **Green** = Done\n🟣 **Purple** = Proposed by agent","x":-540,"y":-310,"width":380,"height":230,"color":"0"},
+		{"id":"canvas-warnings","type":"text","text":"## Warnings\n✓ None","x":-540,"y":-530,"width":380,"height":200,"color":"3"},
+		{"id":"5c7354d6","type":"text","text":"## UI-01 Streamlit file upload page\nBuild app.py: file uploader widget, call the parser, show a spinner while loading, and display a data preview table (first 5 rows + shape info).","x":1340,"y":40,"width":280,"height":160,"color":"4"},
+		{"id":"84ccc37d","type":"text","text":"## UI-02 Chat interface with chart rendering\nAdd a chat-style interface: user can type a question or click Analyze automatically. Display LLM text responses and render captured chart images inline in the conversation.","x":1340,"y":220,"width":280,"height":160,"color":"4"},
+		{"id":"b7593e71","type":"text","text":"## UI-03 Chart export & polish\nAdd download buttons for each chart (PNG/HTML). Apply a clean theme with wide layout. Add loading states, error messages, and an empty-state screen when no file is uploaded.","x":1340,"y":400,"width":280,"height":160,"color":"4"}
 	],
-	"edges": [
-		{
-			"id": "edge-001",
-			"fromNode": "958f6266",
-			"fromSide": "bottom",
-			"toNode": "59f9fc66",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-002",
-			"fromNode": "59f9fc66",
-			"fromSide": "right",
-			"toNode": "42e4bb9f",
-			"toSide": "left"
-		},
-		{
-			"id": "edge-003",
-			"fromNode": "42e4bb9f",
-			"fromSide": "bottom",
-			"toNode": "091907be",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-004",
-			"fromNode": "42e4bb9f",
-			"fromSide": "right",
-			"toNode": "cf4c2660",
-			"toSide": "left"
-		},
-		{
-			"id": "edge-005",
-			"fromNode": "cf4c2660",
-			"fromSide": "bottom",
-			"toNode": "82d7807c",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-006",
-			"fromNode": "958f6266",
-			"fromSide": "right",
-			"toNode": "5c7354d6",
-			"toSide": "left"
-		},
-		{
-			"id": "edge-007",
-			"fromNode": "5c7354d6",
-			"fromSide": "bottom",
-			"toNode": "84ccc37d",
-			"toSide": "top"
-		},
-		{
-			"id": "edge-008",
-			"fromNode": "82d7807c",
-			"fromSide": "right",
-			"toNode": "84ccc37d",
-			"toSide": "left"
-		},
-		{
-			"id": "edge-009",
-			"fromNode": "091907be",
-			"fromSide": "right",
-			"toNode": "84ccc37d",
-			"toSide": "left"
-		},
-		{
-			"id": "edge-010",
-			"fromNode": "84ccc37d",
-			"fromSide": "bottom",
-			"toNode": "b7593e71",
-			"toSide": "top"
-		}
+	"edges":[
+		{"id":"edge-001","fromNode":"958f6266","fromSide":"bottom","toNode":"59f9fc66","toSide":"top"},
+		{"id":"edge-002","fromNode":"59f9fc66","fromSide":"right","toNode":"42e4bb9f","toSide":"left"},
+		{"id":"edge-003","fromNode":"42e4bb9f","fromSide":"bottom","toNode":"091907be","toSide":"top"},
+		{"id":"edge-004","fromNode":"42e4bb9f","fromSide":"right","toNode":"cf4c2660","toSide":"left"},
+		{"id":"edge-005","fromNode":"cf4c2660","fromSide":"bottom","toNode":"82d7807c","toSide":"top"},
+		{"id":"edge-006","fromNode":"958f6266","fromSide":"right","toNode":"5c7354d6","toSide":"left"},
+		{"id":"edge-007","fromNode":"5c7354d6","fromSide":"bottom","toNode":"84ccc37d","toSide":"top"},
+		{"id":"edge-008","fromNode":"82d7807c","fromSide":"right","toNode":"84ccc37d","toSide":"left"},
+		{"id":"edge-009","fromNode":"091907be","fromSide":"right","toNode":"84ccc37d","toSide":"left"},
+		{"id":"edge-010","fromNode":"84ccc37d","fromSide":"bottom","toNode":"b7593e71","toSide":"top"}
 	]
 }
