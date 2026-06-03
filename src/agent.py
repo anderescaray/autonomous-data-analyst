@@ -1,3 +1,4 @@
+"""LangGraph agent graph — wires planner, explainer, ReAct agent, and harvester nodes."""
 import pandas as pd
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -39,6 +40,7 @@ You have access to a pandas DataFrame named 'df'.
 
 
 def _fmt_chart_explanations(explanations: list[dict]) -> str:
+    """Render chart explanations as a formatted string for the agent system prompt."""
     if not explanations:
         return "No chart insights available yet."
     lines = []
@@ -54,6 +56,7 @@ def _fmt_chart_explanations(explanations: list[dict]) -> str:
 
 
 def _fmt_chart_plan(chart_plan: list[dict]) -> str:
+    """Render the chart plan as a numbered list for the agent system prompt."""
     if not chart_plan:
         return "No chart plan available yet."
     lines = []

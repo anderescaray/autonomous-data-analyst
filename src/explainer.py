@@ -1,3 +1,4 @@
+"""Chart explainer — generates plain-language insights for each chart before rendering."""
 from __future__ import annotations
 
 import json
@@ -36,12 +37,15 @@ Respond with ONLY a JSON array — no markdown, no prose. One element per chart,
 
 @dataclass
 class ChartExplanation:
+    """Plain-language explanation for a single chart, produced before any code runs."""
+
     chart_title: str
     what_it_shows: str
     key_insight: str
     suggested_action: str
 
     def to_dict(self) -> dict:
+        """Serialize to a plain dict for JSON storage in AgentState."""
         return {
             "chart_title": self.chart_title,
             "what_it_shows": self.what_it_shows,
@@ -86,6 +90,7 @@ def explain_charts(chart_plan: list[dict], profile_text: str) -> list[ChartExpla
 
 
 def _parse_response(content: str, chart_plan: list[dict]) -> list[ChartExplanation]:
+    """Parse LLM JSON output into ChartExplanation objects, padding if the count is short."""
     text = _extract_json(content)
 
     try:

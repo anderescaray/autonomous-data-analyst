@@ -1,3 +1,4 @@
+"""File ingestion — parse CSV and Excel uploads into a clean DataFrame."""
 import io
 from pathlib import Path
 
@@ -44,6 +45,7 @@ def load_file(source: str | Path | io.IOBase, filename: str = "") -> pd.DataFram
 # ── private helpers ────────────────────────────────────────────────────────────
 
 def _read_excel(source, name: str) -> pd.DataFrame:
+    """Read an Excel file via openpyxl, raising IngestionError on failure."""
     try:
         return pd.read_excel(source, engine="openpyxl")
     except Exception as exc:
@@ -51,6 +53,7 @@ def _read_excel(source, name: str) -> pd.DataFrame:
 
 
 def _read_csv(source, name: str) -> pd.DataFrame:
+    """Try common encodings and separators; keep the parse with the most columns."""
     import pandas.errors
 
     best: pd.DataFrame | None = None

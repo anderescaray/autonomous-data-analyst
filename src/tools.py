@@ -1,3 +1,4 @@
+"""Legacy REPL tool factory (superseded by chart_tools.py)."""
 import pandas as pd
 from langchain_experimental.tools import PythonAstREPLTool
 

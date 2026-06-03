@@ -1,3 +1,4 @@
+"""Python REPL tool with automatic matplotlib/plotly figure capture."""
 from __future__ import annotations
 
 import io

@@ -1,3 +1,4 @@
+"""Dataset profiler — builds a structured summary for LLM consumption."""
 from __future__ import annotations
 
 import pandas as pd
@@ -86,6 +87,7 @@ def profile_to_text(profile: dict) -> str:
 # ── helpers ───────────────────────────────────────────────────────────────────
 
 def _friendly_dtype(series: pd.Series) -> str:
+    """Map a pandas dtype to a human-readable label."""
     if pd.api.types.is_integer_dtype(series):
         return "integer"
     if pd.api.types.is_float_dtype(series):
@@ -98,6 +100,7 @@ def _friendly_dtype(series: pd.Series) -> str:
 
 
 def _fmt(val) -> str:
+    """Format a numeric value to 4 decimal places, or return 'n/a'."""
     if val is None:
         return "n/a"
     try:

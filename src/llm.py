@@ -1,3 +1,4 @@
+"""LLM provider factory — returns a LangChain chat model from env config."""
 import os
 from dotenv import load_dotenv
 from langchain_core.language_models import BaseChatModel

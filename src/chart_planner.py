@@ -1,3 +1,4 @@
+"""Chart planner — asks the LLM which charts are most relevant for a dataset."""
 from __future__ import annotations
 
 import json
@@ -47,6 +48,8 @@ Respond with ONLY a JSON array — no markdown, no prose before or after. Each e
 
 @dataclass
 class ChartSpec:
+    """A single chart recommendation produced by the planner LLM."""
+
     chart_type: str
     title: str
     x: str | None
@@ -54,6 +57,7 @@ class ChartSpec:
     justification: str
 
     def to_dict(self) -> dict:
+        """Serialize to a plain dict for JSON storage in AgentState."""
         return {
             "chart_type": self.chart_type,
             "title": self.title,
