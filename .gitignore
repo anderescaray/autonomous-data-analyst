@@ -70,3 +70,10 @@ logs/
 .coverage
 htmlcov/
 .tox/
+
+# === Linting / type checking ===
+.ruff_cache/
+.mypy_cache/
+
+# === Editor state ===
+.obsidian/
